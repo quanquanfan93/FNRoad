@@ -1,4 +1,4 @@
-package com.example.administrator.fnroad;
+package com.example.administrator.fnroad.map;
 
 import android.util.Log;
 
@@ -165,7 +165,7 @@ public class TDTTiledServiceLayer extends TiledServiceLayer {
         return new TDTUrl(level,col,row,mapType).generateUrl();
     }
 
-    enum  TDTTiledServiceType {
+   public enum  TDTTiledServiceType {
         /**
          * 天地图矢量
          * */

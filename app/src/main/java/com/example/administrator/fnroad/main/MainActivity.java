@@ -1,4 +1,4 @@
-package com.example.administrator.fnroad;
+package com.example.administrator.fnroad.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import com.esri.android.map.MapView;
 import com.esri.android.map.event.OnZoomListener;
 import com.esri.android.runtime.ArcGISRuntime;
 import com.esri.core.geometry.Envelope;
+import com.example.administrator.fnroad.R;
+import com.example.administrator.fnroad.map.TDTTiledServiceLayer;
 
 public class MainActivity extends AppCompatActivity {
 

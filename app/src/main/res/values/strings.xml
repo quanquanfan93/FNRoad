@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">FNRoad</string>
+    <!--APP名称-->
+    <string name="app_name">阜南公路</string>
+    <!--获取到的数据不符合规范错误提示信息-->
+    <string name="app_toast_service_wrong">哇！服务器居然出错了耶!</string>
+    <!--网络原因提示信息-->
+    <string name="app_toast_net_wrong">哟？网络出问题了？</string>
+    <!--无数据提示信息-->
+    <string name="app_toast_none_data">哟！居然没数据！</string>
+    <!--已加载所有数据信息-->
+    <string name="app_toast_load_all_data">哟！居然没数据！</string>
+    <!--提示用户操作成功-->
+    <string name="app_toast_return_success">操作成功！</string>
+    <!--服务器基URL-->
+    <string name="php_service_url">http://192.168.253.1/FNRoad/index.php/</string>
 </resources>
