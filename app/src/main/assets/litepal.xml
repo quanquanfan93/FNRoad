@@ -1,0 +1,8 @@
+<litepal>
+    <dbname value="FNRoad"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.example.administrator.fnroad.db.Project"/>
+        <mapping class="com.example.administrator.fnroad.db.ProjectType"/>
+    </list>
+</litepal>

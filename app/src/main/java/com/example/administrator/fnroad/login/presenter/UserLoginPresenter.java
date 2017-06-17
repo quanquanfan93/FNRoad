@@ -179,7 +179,6 @@ public class UserLoginPresenter implements IUserLoginPresenter {
                 mUserLoginView.autoLoginCbSetChecked();
                 if (isAutoLogoutOrAutoLogin()) {
                     loginBtnOnClicked(true);
-//                    ProjectApplication.getInstance().setUserBean(mUserBean);
                 }
             }
         }
