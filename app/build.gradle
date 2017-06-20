@@ -32,11 +32,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile 'com.esri.arcgis.android:arcgis-android:10.2.8-1'
+//    compile 'com.esri.arcgis.android:arcgis-android:10.2.8-1'
+//    compile 'com.esri.arcgisruntime:arcgis-android:100.0.0'
+    compile 'com.esri.arcgis.android:arcgis-android:10.2.9'
     compile 'com.github.dmytrodanylyk.android-process-button:library:1.0.0'//android-process-button
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     //picasso图片缓存库
     compile'org.litepal.android:core:1.4.1'
+    compile'com.android.support:design:24.2.1'
+    compile 'com.jakewharton:butterknife:8.0.1'
 }

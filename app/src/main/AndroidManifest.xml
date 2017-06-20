@@ -3,6 +3,10 @@
           package="com.example.administrator.fnroad">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -11,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-        android:name="org.litepal.LitePalApplication">
+        android:name=".ProjectApplication">
 
         <activity
             android:name=".login.view.UserLoginActivity"
@@ -23,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".main.MainActivity">
+        <activity android:name=".main.view.MainActivity">
         </activity>
     </application>
 

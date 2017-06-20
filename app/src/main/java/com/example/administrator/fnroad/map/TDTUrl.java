@@ -75,7 +75,7 @@ public class TDTUrl {
             default:
                 return null;
         }
-        Log.e(TAG, "generateUrl: "+level );
+//        Log.e(TAG, "generateUrl: "+level );
         return url.toString();
     }
 }

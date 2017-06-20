@@ -15,7 +15,7 @@ import com.example.administrator.fnroad.R;
 import com.example.administrator.fnroad.login.model.UserBean;
 import com.example.administrator.fnroad.login.presenter.IUserLoginPresenter;
 import com.example.administrator.fnroad.login.presenter.UserLoginPresenter;
-import com.example.administrator.fnroad.main.MainActivity;
+import com.example.administrator.fnroad.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2016/10/10 0010.

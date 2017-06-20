@@ -105,7 +105,7 @@ public class UserLoginPresenter implements IUserLoginPresenter {
         param[1] = new OkHttpUtils.Param("USERPSW", mUserBean.getPassword());
         String url = mUserLoginView.getActivity().getString(R.string.php_service_url) + "User/validate";
 
-        okHttpUtils.postAsyn(url, param, new OkHttpUtils.ResultCallback<String>() {
+        OkHttpUtils.postAsyn(url, param, new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
                 mUserLoginView.onError();
@@ -123,6 +123,7 @@ public class UserLoginPresenter implements IUserLoginPresenter {
 //                        sharePrefrenceHelper.putStringValue(GROUP_NAME, info.getString("name"));
 //                        sharePrefrenceHelper.putStringValue(GROUP_HIDE, info.getString("hide"));
 //                        sharePrefrenceHelper.putStringValue("isongoing", "");
+                        mUserBean.setUserId(jsonObject.getInt("id"));
                         mUserBean.setName(jsonObject.getString("name"));
                         mUserBean.setTelephone(jsonObject.getInt("telephone"));
                         mUserBean.setPermission(jsonObject.getInt("permission"));

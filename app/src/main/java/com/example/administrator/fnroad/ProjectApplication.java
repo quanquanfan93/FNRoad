@@ -66,52 +66,18 @@ public class ProjectApplication extends Application {
         ToastUtils.showLong(getApplicationContext(), getResources().getString(R.string.app_toast_return_success));
     }
 
-    /**
-     * 记录社区第一个所有帖子界面的加载贴子的起始序号Index，请求服务时候的数据库记录长度Length
-     */
-    public int postsIndex = -1;
-    public int postsDBLength = -1;
-
-    public int getPostsIndex() {
-        return postsIndex;
-    }
-
-    public void setPostsIndex(int postsIndex) {
-        this.postsIndex = postsIndex;
-    }
-
-    public int getPostsDBLength() {
-        return postsDBLength;
-    }
-
-    public void setPostsDBLength(int postsDBLength) {
-        this.postsDBLength = postsDBLength;
-    }
-
-    /**
-     * 记录社区第二个指定帖子的评论信息的INDEX
-     */
-    public int commentOfPostIndex = -1;
-
-    public int getCommentOfPostIndex() {
-        return commentOfPostIndex;
-    }
-
-    public void setCommentOfPostIndex(int commentOfPostIndex) {
-        this.commentOfPostIndex = commentOfPostIndex;
-    }
 
     /**
      * 包含用户所有信息的实例对象。供全局存取
      */
-    public UserBean userBean;
+    public UserBean userBean=null;
 
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
     }
 
     public UserBean getUserBean() {
-        return userBean;
+        return this.userBean;
     }
 
     /**

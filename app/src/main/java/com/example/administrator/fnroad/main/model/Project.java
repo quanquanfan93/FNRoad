@@ -1,7 +1,8 @@
-package com.example.administrator.fnroad.db;
+package com.example.administrator.fnroad.main.model;
 
-import org.litepal.crud.DataSupport;
-import org.w3c.dom.ProcessingInstruction;
+import com.esri.core.internal.catalog.User;
+import com.example.administrator.fnroad.login.model.UserBean;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
@@ -9,23 +10,32 @@ import java.util.Date;
  * Created by Administrator on 2017/6/17 0017.
  */
 
-public class Project extends DataSupport{
-    private int projectId;
-    private int status;
-    private String projectName;
-    private String roadName;
-    private int projectType;
-    private Date createTime;
-    private Date etc;
-    private String description;
-    private double estimatedAmount;
-    private double actualAmount;
-    private String organization;
-    private String constructionManager;
-    private int patrolManager;
-    private int progress;
-    private double x;
-    private double y;
+public class Project{
+    @SerializedName("project_id")
+    public int projectId;
+    public int status;
+    @SerializedName("project_name")
+    public String projectName;
+    @SerializedName("road_name")
+    public String roadName;
+    @SerializedName("project_type")
+    public ProjectType projectType;
+    @SerializedName("create_time")
+    public String createTime;
+    public String etc;
+    public String description;
+    @SerializedName("estimated_amount")
+    public double estimatedAmount;
+    @SerializedName("actual_amount")
+    public double actualAmount;
+    public String organization;
+    @SerializedName("construction_manager")
+    public String constructionManager;
+    @SerializedName("patrol_manager")
+    public UserBean patrolManager;
+    public int progress;
+    public double x;
+    public double y;
 
     public int getProjectId() {
         return projectId;
@@ -59,27 +69,27 @@ public class Project extends DataSupport{
         this.roadName = roadName;
     }
 
-    public int getProjectType() {
+    public ProjectType getProjectType() {
         return projectType;
     }
 
-    public void setProjectType(int projectType) {
+    public void setProjectType(ProjectType projectType) {
         this.projectType = projectType;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getEtc() {
+    public String getEtc() {
         return etc;
     }
 
-    public void setEtc(Date etc) {
+    public void setEtc(String etc) {
         this.etc = etc;
     }
 
@@ -123,11 +133,11 @@ public class Project extends DataSupport{
         this.constructionManager = constructionManager;
     }
 
-    public int getPatrolManager() {
+    public UserBean getPatrolManager() {
         return patrolManager;
     }
 
-    public void setPatrolManager(int patrolManager) {
+    public void setPatrolManager(UserBean patrolManager) {
         this.patrolManager = patrolManager;
     }
 

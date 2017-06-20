@@ -1,4 +1,4 @@
-package com.example.administrator.fnroad.db;
+package com.example.administrator.fnroad.main.model;
 
 import org.litepal.crud.DataSupport;
 
@@ -6,7 +6,7 @@ import org.litepal.crud.DataSupport;
  * Created by Administrator on 2017/6/17 0017.
  */
 
-public class ProjectType extends DataSupport{
+public class ProjectType{
     private int id;
     private String type;
     private String description;
