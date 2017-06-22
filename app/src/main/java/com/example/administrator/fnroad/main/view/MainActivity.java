@@ -31,6 +31,7 @@ import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.SpatialReference;
+import com.esri.core.map.Graphic;
 import com.example.administrator.fnroad.R;
 import com.example.administrator.fnroad.main.presenter.IProjectPresenter;
 import com.example.administrator.fnroad.main.presenter.ProjectPresenter;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
     private static Point mLocation = null;
     private IProjectPresenter projectPresenter;
     private final SpatialReference egs = SpatialReference.create(4326);
-    private GraphicsLayer mGraphicsLayer;
+    private GraphicsLayer mGraphicsLayer=new GraphicsLayer();
 
 
     @Override
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
         mMapView = (MapView) findViewById(R.id.mapView);;
         mLocationFab=(FloatingActionButton)findViewById(R.id.fab);
         projectPresenter=new ProjectPresenter(this);
-        initMap();
         List<String> permissionList=new ArrayList<>();
         if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)!=
                 PackageManager.PERMISSION_GRANTED){
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
             String[] permissions=permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }else {
+            initMap();
             setLocation();
         }
         projectPresenter.showUserProjectData();
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
                 cva.refresh();
             }
         });
+        mMapView.addLayer(mGraphicsLayer);
 //        mMapView.setOnStatusChangedListener(new OnStatusChangedListener() {
 //            @Override
 //            public void onStatusChanged(Object o, STATUS status) {
@@ -152,9 +154,16 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
         mMapView.pause();
     }
 
+
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+
+    @Override
+    public void addGraphicOnMap(Graphic graphic) {
+        mGraphicsLayer.addGraphic(graphic);
     }
 
 
@@ -214,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
                             return;
                         }
                     }
+                    initMap();
                     setLocation();
                 }else {
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();
@@ -223,4 +233,6 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
             default:
         }
     }
+
+
 }

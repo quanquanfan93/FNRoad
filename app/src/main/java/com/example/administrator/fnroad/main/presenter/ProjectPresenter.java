@@ -1,29 +1,20 @@
 package com.example.administrator.fnroad.main.presenter;
 
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.esri.core.internal.catalog.User;
+import com.esri.core.geometry.Point;
+import com.esri.core.map.Graphic;
+import com.esri.core.symbol.PictureMarkerSymbol;
 import com.example.administrator.fnroad.ProjectApplication;
 import com.example.administrator.fnroad.R;
-import com.example.administrator.fnroad.login.model.UserBean;
 import com.example.administrator.fnroad.main.model.Project;
-import com.example.administrator.fnroad.main.model.ProjectType;
 import com.example.administrator.fnroad.main.view.IProjectView;
-import com.example.administrator.fnroad.main.view.MainActivity;
 import com.example.administrator.fnroad.utils.OkHttpUtils;
 import com.google.gson.Gson;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 import okhttp3.Request;
 
@@ -62,6 +53,10 @@ public class ProjectPresenter implements IProjectPresenter{
         }
     }
 
+    /**
+     * 处理项目数据并加以显示。
+     * @param response
+     */
     private void handleProjectsData(String response){
         Gson gson=new Gson();
 //        List<Project> projectList=new ArrayList<>();
@@ -108,8 +103,27 @@ public class ProjectPresenter implements IProjectPresenter{
 //        }
         List<Project> projectList=gson.fromJson(response,new TypeToken<List<Project>>(){}.getType());
         Log.e(TAG, "handleProjectsData: "+projectList.size());
-
+        for(Project project:projectList){
+            Drawable drawable=null;
+            switch (project.getStatus()){
+                case 1: drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_wait);
+                    break;
+                case 2:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_doing);
+                    break;
+                case 3:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_update);
+                    break;
+                case 4:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_done);
+                    break;
+                default:
+                    break;
+            }
+            if(drawable!=null) {
+                PictureMarkerSymbol pictureMarkerSymbol = new PictureMarkerSymbol(mProjectView.getActivity().getApplicationContext(),
+                        drawable);
+                Point pictureMarkerPoint = new Point(project.getX(), project.getY());
+                Graphic pictureMarkerGraphic = new Graphic(pictureMarkerPoint, pictureMarkerSymbol);
+                mProjectView.addGraphicOnMap(pictureMarkerGraphic);
+            }
+        }
     }
-
-
 }
