@@ -1,0 +1,313 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:focusable="true"
+                  android:focusableInTouchMode="true"
+                  android:orientation="vertical"
+                  android:paddingBottom="15dp"
+                  android:paddingLeft="20dp"
+                  android:paddingRight="20dp"
+                  android:paddingTop="15dp">
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:orientation="horizontal"-->
+        <!--&gt;-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:text="添加新项目"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:textSize="20sp"/>-->
+
+    <!--</LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="项目"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="名称"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edt_project_name"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_weight="8.5"
+            android:background="@drawable/edit_bg"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center_vertical"
+                android:text="公路"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="8.5"
+                android:background="@drawable/edit_bg"
+                >
+                <Spinner
+                    android:id="@+id/sp_road_type"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:maxWidth="15dp"
+                    android:minHeight="12dp"
+                    android:popupBackground="#FFFFFF"
+                    android:scrollbarSize="6dp"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center_vertical"
+                android:text="类型"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="8.5"
+                android:background="@drawable/edit_bg"
+                >
+
+                <Spinner
+                    android:id="@+id/sp_project_type"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:maxWidth="15dp"
+                    android:minHeight="12dp"
+                    android:popupBackground="#FFFFFF"
+                    android:scrollbarSize="6dp"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:text="问题"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:text="描述"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edt_project_description"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_weight="8.5"
+                android:background="@drawable/edit_bg"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:text="凭证"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:text="上传"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+
+            <!--<EditText-->
+                <!--android:id="@+id/edt_project_description"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginStart="10dp"-->
+                <!--android:layout_weight="8.5"-->
+                <!--android:background="@drawable/edit_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18sp"/>-->
+            <GridView
+                android:id="@+id/gv_pictures"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="8.5"
+                android:numColumns="3"
+                android:columnWidth="100dp"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+        <!--&lt;!&ndash; 网格显示图片 行列间距5dp 每列宽度90dp &ndash;&gt;-->
+        <!--<com.example.administrator.fnroad.view.NoScrollGridView-->
+        <!--android:id="@+id/gv_pictures"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:columnWidth="90dp"-->
+        <!--android:gravity="center"-->
+        <!--android:numColumns="4"-->
+        <!--android:stretchMode="columnWidth"/>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_add_project"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:background="@color/bgBorder"
+                android:text="提交"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+
+            <Button
+                android:id="@+id/btn_cancel_project"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:background="@color/bgBorder"
+                android:text="取消"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -25,17 +25,18 @@ public class Project{
     public String etc;
     public String description;
     @SerializedName("estimated_amount")
-    public double estimatedAmount;
+    public String estimatedAmount;
     @SerializedName("actual_amount")
-    public double actualAmount;
+    public String actualAmount;
     public String organization;
     @SerializedName("construction_manager")
     public String constructionManager;
     @SerializedName("patrol_manager")
     public UserBean patrolManager;
-    public int progress;
+    public String progress;
     public double x;
     public double y;
+    public String picture;
 
     public int getProjectId() {
         return projectId;
@@ -101,19 +102,19 @@ public class Project{
         this.description = description;
     }
 
-    public double getEstimatedAmount() {
+    public String getEstimatedAmount() {
         return estimatedAmount;
     }
 
-    public void setEstimatedAmount(double estimatedAmount) {
+    public void setEstimatedAmount(String estimatedAmount) {
         this.estimatedAmount = estimatedAmount;
     }
 
-    public double getActualAmount() {
+    public String getActualAmount() {
         return actualAmount;
     }
 
-    public void setActualAmount(double actualAmount) {
+    public void setActualAmount(String actualAmount) {
         this.actualAmount = actualAmount;
     }
 
@@ -141,11 +142,11 @@ public class Project{
         this.patrolManager = patrolManager;
     }
 
-    public int getProgress() {
+    public String getProgress() {
         return progress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(String progress) {
         this.progress = progress;
     }
 
@@ -163,5 +164,13 @@ public class Project{
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

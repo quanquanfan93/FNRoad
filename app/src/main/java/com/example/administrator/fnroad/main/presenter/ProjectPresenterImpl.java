@@ -1,19 +1,28 @@
 package com.example.administrator.fnroad.main.presenter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.View;
 
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.PictureMarkerSymbol;
 import com.example.administrator.fnroad.ProjectApplication;
 import com.example.administrator.fnroad.R;
+import com.example.administrator.fnroad.login.model.UserBean;
 import com.example.administrator.fnroad.main.model.Project;
+import com.example.administrator.fnroad.main.model.ProjectType;
 import com.example.administrator.fnroad.main.view.IProjectView;
 import com.example.administrator.fnroad.utils.OkHttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Request;
@@ -22,17 +31,16 @@ import okhttp3.Request;
  * Created by Administrator on 2017/6/20 0020.
  */
 
-public class ProjectPresenter implements IProjectPresenter{
-    private static final String TAG = "ProjectPresenter";
+public class ProjectPresenterImpl implements IProjectPresenter{
+    private static final String TAG = "ProjectPresenterImpl";
     private IProjectView mProjectView;
 
-    public ProjectPresenter(IProjectView projectView){
+    public ProjectPresenterImpl(IProjectView projectView){
         this.mProjectView=projectView;
     }
 
     @Override
     public void showUserProjectData(){
-//        OkHttpUtils okHttpUtils = OkHttpUtils.getInstance();
         try {
             OkHttpUtils.Param[] param = new OkHttpUtils.Param[1];
             param[0] = new OkHttpUtils.Param("USERID", String.valueOf(ProjectApplication.getInstance().getUserBean().getUserId()));
@@ -50,6 +58,15 @@ public class ProjectPresenter implements IProjectPresenter{
             });
         }catch (Exception e){
             Log.e(TAG, "showUserProjectData: "+e);
+        }
+    }
+
+    @Override
+    public void onWidgetClicked(View v) {
+        switch (v.getId()){
+            case R.id.add_project:
+                mProjectView.addNewProject();
+                break;
         }
     }
 
@@ -95,6 +112,7 @@ public class ProjectPresenter implements IProjectPresenter{
 //                project.setProgress(jsonObject.getInt("progress"));
 //                project.setX(jsonObject.getDouble("x"));
 //                project.setY(jsonObject.getDouble("y"));
+//                project.setPicture(jsonObject.getString("picture"));
 //                projectList.add(project);
 //            }
 //        } catch (JSONException e) {
@@ -106,13 +124,13 @@ public class ProjectPresenter implements IProjectPresenter{
         for(Project project:projectList){
             Drawable drawable=null;
             switch (project.getStatus()){
-                case 1: drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_wait);
+                case 1: drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_wait);
                     break;
-                case 2:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_doing);
+                case 2:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_doing);
                     break;
-                case 3:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_update);
+                case 3:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_update);
                     break;
-                case 4:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.point_done);
+                case 4:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_done);
                     break;
                 default:
                     break;

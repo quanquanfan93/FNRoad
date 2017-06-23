@@ -1,6 +1,6 @@
 <resources>
     <!--APP名称-->
-    <string name="app_name">阜南公路</string>
+    <string name="app_name">阜南公路工程信息管理系统</string>
     <!--获取到的数据不符合规范错误提示信息-->
     <string name="app_toast_service_wrong">哇！服务器居然出错了耶!</string>
     <!--网络原因提示信息-->

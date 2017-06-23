@@ -9,25 +9,28 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".ProjectApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-        android:name=".ProjectApplication">
-
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity
             android:name=".login.view.UserLoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|"
-            android:screenOrientation="portrait">   <!-- 设定进去的为竖屏格式-->
+            android:screenOrientation="portrait"> <!-- 设定进去的为竖屏格式 -->
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity android:name=".main.view.MainActivity">
+        </activity>
+        <activity android:name=".project.view.NewProjectActivity">
+        </activity>
+        <activity android:name=".feedback.view.NewFeedbackActivity">
         </activity>
     </application>
 

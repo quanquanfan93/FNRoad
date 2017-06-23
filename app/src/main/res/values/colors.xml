@@ -9,4 +9,5 @@
     <color name="user_message_hint">#32939494</color>
     <color name="login_devide_line">#CBCED2</color>
     <color name="colorRed">#DC143C</color>
+    <color name="bgBorder">#1874CD</color>
 </resources>

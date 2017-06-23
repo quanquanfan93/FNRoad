@@ -12,4 +12,6 @@ public interface IProjectView{
     Activity getActivity();
 
     void addGraphicOnMap(Graphic graphic);
+
+    void addNewProject();
 }

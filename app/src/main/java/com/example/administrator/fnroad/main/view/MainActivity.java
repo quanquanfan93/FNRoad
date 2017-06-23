@@ -2,26 +2,23 @@ package com.example.administrator.fnroad.main.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-//import com.esri.android.map.LocationDisplayManager;
-//import com.esri.android.map.MapView;
-//import com.esri.android.map.event.OnZoomListener;
-//import com.esri.android.runtime.ArcGISRuntime;
-//import com.esri.core.geometry.Envelope;
-//import com.esri.arcgisruntime.geometry.Envelope;
-//import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
@@ -34,23 +31,37 @@ import com.esri.core.geometry.SpatialReference;
 import com.esri.core.map.Graphic;
 import com.example.administrator.fnroad.R;
 import com.example.administrator.fnroad.main.presenter.IProjectPresenter;
-import com.example.administrator.fnroad.main.presenter.ProjectPresenter;
+import com.example.administrator.fnroad.main.presenter.ProjectPresenterImpl;
 import com.example.administrator.fnroad.map.TDTTiledServiceLayer;
+import com.example.administrator.fnroad.project.view.NewProjectActivity;
+import com.example.administrator.fnroad.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity implements IProjectView{
+public class MainActivity extends AppCompatActivity implements IProjectView,View.OnClickListener{
     private static final String TAG = "MainActivity";
 
     private MapView mMapView ;
+    private ImageView addProjectIV;
     private FloatingActionButton mLocationFab;
     private LocationDisplayManager mLocationDisplayManager;
     private static Point mLocation = null;
     private IProjectPresenter projectPresenter;
     private final SpatialReference egs = SpatialReference.create(4326);
     private GraphicsLayer mGraphicsLayer=new GraphicsLayer();
+    public static final int REQUEST_NEW_PROJECT=1;
+    private static boolean isExit = false;//退出应用
+    private static Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    isExit = false;
+                    break;
+            }
+        }
+    };
 
 
     @Override
@@ -60,8 +71,10 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
         ArcGISRuntime.setClientId("GSyp0BE8ewTdlEhI");
         setContentView(R.layout.activity_main);
         mMapView = (MapView) findViewById(R.id.mapView);;
+        addProjectIV=(ImageView)findViewById(R.id.add_project);
         mLocationFab=(FloatingActionButton)findViewById(R.id.fab);
-        projectPresenter=new ProjectPresenter(this);
+        projectPresenter=new ProjectPresenterImpl(this);
+        initMap();
         List<String> permissionList=new ArrayList<>();
         if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)!=
                 PackageManager.PERMISSION_GRANTED){
@@ -79,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
             String[] permissions=permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }else {
-            initMap();
             setLocation();
         }
         projectPresenter.showUserProjectData();
+        addProjectIV.setOnClickListener(this);
     }
 
     /**
@@ -160,12 +173,26 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
         return this;
     }
 
-
     @Override
     public void addGraphicOnMap(Graphic graphic) {
         mGraphicsLayer.addGraphic(graphic);
     }
 
+    @Override
+    public void addNewProject() {
+        Bundle bundle=new Bundle();
+        bundle.putDouble("x",mLocationDisplayManager.getLocation().getLongitude());
+        bundle.putDouble("y",mLocationDisplayManager.getLocation().getLatitude());
+        Intent intent = new Intent(MainActivity.this, NewProjectActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent,REQUEST_NEW_PROJECT);
+//        this.finish();
+    }
+
+    @Override
+    public void onClick(View view) {
+        projectPresenter.onWidgetClicked(view);
+    }
 
     /**
      * 定位内部类
@@ -223,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
                             return;
                         }
                     }
-                    initMap();
                     setLocation();
                 }else {
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();
@@ -234,5 +260,32 @@ public class MainActivity extends AppCompatActivity implements IProjectView{
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //双击返回键退出应用
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isExit) {
+                finish();
+                System.exit(0);
+            } else {
+                isExit = true;
+                ToastUtils.showShort(getApplicationContext(), "再按一次后退键退出程序");
+                mHandler.sendEmptyMessageDelayed(0, 1000);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_NEW_PROJECT:
+                if(resultCode==RESULT_OK){
+                    mGraphicsLayer.removeAll();
+                    projectPresenter.showUserProjectData();
+                }
+        }
+    }
 }
