@@ -2,6 +2,8 @@ package com.example.administrator.fnroad.main.view;
 
 import android.app.Activity;
 
+import com.esri.android.map.GraphicsLayer;
+import com.esri.android.map.MapView;
 import com.esri.core.map.Graphic;
 
 /**
@@ -14,4 +16,8 @@ public interface IProjectView{
     void addGraphicOnMap(Graphic graphic);
 
     void addNewProject();
+
+    GraphicsLayer getGraphicLayer();
+
+    MapView getMapView();
 }

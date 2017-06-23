@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import com.esri.android.map.GraphicsLayer;
+import com.esri.android.map.MapView;
+import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.PictureMarkerSymbol;
@@ -14,8 +17,11 @@ import com.example.administrator.fnroad.login.model.UserBean;
 import com.example.administrator.fnroad.main.model.Project;
 import com.example.administrator.fnroad.main.model.ProjectType;
 import com.example.administrator.fnroad.main.view.IProjectView;
+import com.example.administrator.fnroad.main.view.ProjectFeedbackDialog;
+import com.example.administrator.fnroad.spreference.SharePrefrenceHelper;
 import com.example.administrator.fnroad.utils.OkHttpUtils;
 import com.google.gson.Gson;
+import com.google.gson.internal.ObjectConstructor;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -23,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Request;
 
@@ -31,16 +39,21 @@ import okhttp3.Request;
  * Created by Administrator on 2017/6/20 0020.
  */
 
-public class ProjectPresenterImpl implements IProjectPresenter{
+public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListener {
     private static final String TAG = "ProjectPresenterImpl";
     private IProjectView mProjectView;
+    private SharePrefrenceHelper sharePrefrenceHelper;
+    private MapView mMapView;
 
-    public ProjectPresenterImpl(IProjectView projectView){
-        this.mProjectView=projectView;
+    public ProjectPresenterImpl(IProjectView projectView) {
+        this.mProjectView = projectView;
+        sharePrefrenceHelper = SharePrefrenceHelper.getInstance(projectView.getActivity());
+        mMapView = mProjectView.getMapView();
+        mMapView.setOnSingleTapListener(this);
     }
 
     @Override
-    public void showUserProjectData(){
+    public void showUserProjectData() {
         try {
             OkHttpUtils.Param[] param = new OkHttpUtils.Param[1];
             param[0] = new OkHttpUtils.Param("USERID", String.valueOf(ProjectApplication.getInstance().getUserBean().getUserId()));
@@ -56,14 +69,14 @@ public class ProjectPresenterImpl implements IProjectPresenter{
                     handleProjectsData(response);
                 }
             });
-        }catch (Exception e){
-            Log.e(TAG, "showUserProjectData: "+e);
+        } catch (Exception e) {
+            Log.e(TAG, "showUserProjectData: " + e);
         }
     }
 
     @Override
     public void onWidgetClicked(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.add_project:
                 mProjectView.addNewProject();
                 break;
@@ -72,10 +85,11 @@ public class ProjectPresenterImpl implements IProjectPresenter{
 
     /**
      * 处理项目数据并加以显示。
+     *
      * @param response
      */
-    private void handleProjectsData(String response){
-        Gson gson=new Gson();
+    private void handleProjectsData(String response) {
+        Gson gson = new Gson();
 //        List<Project> projectList=new ArrayList<>();
 //        try {
 //            JSONArray jsonArray=new JSONArray(response);
@@ -119,29 +133,66 @@ public class ProjectPresenterImpl implements IProjectPresenter{
 //            e.printStackTrace();
 //            Log.e(TAG, "handleProjectsData: "+e);
 //        }
-        List<Project> projectList=gson.fromJson(response,new TypeToken<List<Project>>(){}.getType());
-        Log.e(TAG, "handleProjectsData: "+projectList.size());
-        for(Project project:projectList){
-            Drawable drawable=null;
-            switch (project.getStatus()){
-                case 1: drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_wait);
+        List<Project> projectList = gson.fromJson(response, new TypeToken<List<Project>>() {
+        }.getType());
+        Log.e(TAG, "handleProjectsData: " + projectList.size());
+        for (Project project : projectList) {
+            Drawable drawable = null;
+            switch (project.getStatus()) {
+                case 1:
+                    drawable = mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_wait);
                     break;
-                case 2:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_doing);
+                case 2:
+                    drawable = mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_doing);
                     break;
-                case 3:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_update);
+                case 3:
+                    drawable = mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_update);
                     break;
-                case 4:drawable=mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_done);
+                case 4:
+                    drawable = mProjectView.getActivity().getResources().getDrawable(R.mipmap.icon_point_done);
                     break;
                 default:
                     break;
             }
-            if(drawable!=null) {
+            if (drawable != null) {
                 PictureMarkerSymbol pictureMarkerSymbol = new PictureMarkerSymbol(mProjectView.getActivity().getApplicationContext(),
                         drawable);
                 Point pictureMarkerPoint = new Point(project.getX(), project.getY());
-                Graphic pictureMarkerGraphic = new Graphic(pictureMarkerPoint, pictureMarkerSymbol);
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("PROJECT_ID", project.getProjectId());
+                attributes.put("PROJECT_NAME", project.getProjectName());
+                attributes.put("ROAD_NAME", project.getRoadName());
+                attributes.put("TYPE_ID", project.getProjectType().getId());
+                attributes.put("TYPE_NAME", project.getProjectType().getType());
+                attributes.put("DESCRIPTION", project.getDescription());
+                if (project.getActualAmount().equals(null) || project.getActualAmount().equals(""))
+                    attributes.put("ACTUAL_AMOUNT", 0);
+                else attributes.put("ACTUAL_AMOUNT", project.getActualAmount());
+                if (project.getProgress().equals(null) || project.getProgress().equals(""))
+                    attributes.put("PROGRESS", "0");
+                else attributes.put("PROGRESS", project.getProgress());
+                Graphic pictureMarkerGraphic = new Graphic(pictureMarkerPoint, pictureMarkerSymbol, attributes);
                 mProjectView.addGraphicOnMap(pictureMarkerGraphic);
             }
+        }
+    }
+
+    @Override
+    public void onSingleTap(float v, float v1) {
+        int[] ids = mProjectView.getGraphicLayer().getGraphicIDs(v, v1, 10);
+        if (ids.length > 0) {
+            Graphic selectedGraphic = mProjectView.getGraphicLayer().getGraphic(ids[0]);
+            Map<String, Object> attributes = selectedGraphic.getAttributes();
+            sharePrefrenceHelper.putStringValue("PROJECT_ID", attributes.get("PROJECT_ID").toString());
+            sharePrefrenceHelper.putStringValue("PROJECT_NAME", attributes.get("PROJECT_NAME").toString());
+            sharePrefrenceHelper.putStringValue("ROAD_NAME", attributes.get("ROAD_NAME").toString());
+            sharePrefrenceHelper.putStringValue("TYPE_ID", attributes.get("TYPE_ID").toString());
+            sharePrefrenceHelper.putStringValue("TYPE_NAME", attributes.get("TYPE_NAME").toString());
+            sharePrefrenceHelper.putStringValue("DESCRIPTION", attributes.get("DESCRIPTION").toString());
+            sharePrefrenceHelper.putStringValue("ACTUAL_AMOUNT", attributes.get("ACTUAL_AMOUNT").toString());
+            sharePrefrenceHelper.putStringValue("PROGRESS", attributes.get("PROGRESS").toString());
+            ProjectFeedbackDialog projectFeedbackDialog = new ProjectFeedbackDialog(mProjectView);
+            projectFeedbackDialog.show();
         }
     }
 }

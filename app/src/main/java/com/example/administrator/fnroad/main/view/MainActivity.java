@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
     private IProjectPresenter projectPresenter;
     private final SpatialReference egs = SpatialReference.create(4326);
     private GraphicsLayer mGraphicsLayer=new GraphicsLayer();
-    public static final int REQUEST_NEW_PROJECT=1;
+    public static final int REQUEST_NEW_PROJECT=1,REQUEST_NEW_FEEDBACK=2;
     private static boolean isExit = false;//退出应用
     private static Handler mHandler = new Handler() {
         @Override
@@ -187,6 +187,16 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
         intent.putExtras(bundle);
         startActivityForResult(intent,REQUEST_NEW_PROJECT);
 //        this.finish();
+    }
+
+    @Override
+    public GraphicsLayer getGraphicLayer() {
+        return this.mGraphicsLayer;
+    }
+
+    @Override
+    public MapView getMapView() {
+        return mMapView;
     }
 
     @Override

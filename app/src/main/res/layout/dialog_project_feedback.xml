@@ -1,6 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+    >
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_dialog_feedback_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        android:background="@color/blue"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_project_feedback_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="XXX项目"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
+
+    <!--<ScrollView-->
+        <!--android:id="@+id/sv_project_feedback_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:layout_below="@+id/rl_dialog_feedback_title_view"-->
+        <!--android:layout_marginTop="2dp"-->
+        <!--&gt;-->
+
+        <LinearLayout
+            android:id="@+id/ll_project_feedback_list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rl_dialog_feedback_title_view"
+            android:layout_marginTop="2dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/tv_info_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@color/bgInfo"
+                    android:gravity="center"
+                    android:text="时间"
+                    android:textColor="@android:color/white"
+                    android:textSize="8pt"
+                    android:textStyle="bold" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.05"
+                    android:foreground="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_info_feedback"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@color/bgInfo"
+                    android:gravity="center"
+                    android:text="反馈"
+                    android:textColor="@android:color/white"
+                    android:textSize="8pt"
+                    android:textStyle="bold" />
+
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.05"
+                    android:foreground="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_info_progress"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:background="@color/bgInfo"
+                    android:gravity="center"
+                    android:text="进度"
+                    android:textColor="@android:color/white"
+                    android:textSize="8pt"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+        </LinearLayout>
+    <!--</ScrollView>-->
+    <!--<EditText-->
+        <!--android:id="@+id/edt_user_suggestion"-->
+        <!--android:layout_below="@+id/rl_dialog_user_feedback_title_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="150dp"-->
+        <!--android:gravity="top"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:hint="     "-->
+        <!--android:background="@null"-->
+        <!--android:inputType="textMultiLine"-->
+        <!--android:textSize="15sp"/>-->
+
+    <View
+        android:id="@+id/v_dialog_feedback_line"
+        android:layout_width="wrap_content"
+        android:layout_height="0.5sp"
+        android:layout_below="@+id/ll_project_feedback_list"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@color/app_color_matching" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/v_dialog_feedback_line"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btn_dialog_add_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/blue"
+            android:text="  提交反馈  "
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_dialog_cancel_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/btn_dialog_add_feedback"
+            android:background="@color/blue"
+            android:text="    取消    "
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

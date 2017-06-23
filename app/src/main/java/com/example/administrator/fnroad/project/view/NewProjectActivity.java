@@ -213,5 +213,4 @@ public class NewProjectActivity extends AppCompatActivity implements INewProject
         }
         return path;
     }
-
 }

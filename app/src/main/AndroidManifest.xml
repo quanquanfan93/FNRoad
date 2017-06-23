@@ -32,6 +32,8 @@
         </activity>
         <activity android:name=".feedback.view.NewFeedbackActivity">
         </activity>
+        <activity android:name=".feedback.view.FeedbackDetailActivity">
+        </activity>
     </application>
 
 </manifest>

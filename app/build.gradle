@@ -33,6 +33,7 @@ dependencies {
 //    compile 'com.esri.arcgisruntime:arcgis-android:100.0.0'
     //android-process-button
     //picasso图片缓存库
+    //    compile 'com.github.navasmdc:MaterialDesign:1.5@aar'
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.esri.arcgis.android:arcgis-android:10.2.9'
