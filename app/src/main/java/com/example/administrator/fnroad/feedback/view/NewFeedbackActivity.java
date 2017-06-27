@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.administrator.fnroad.R;
 import com.example.administrator.fnroad.feedback.presenter.INewFeedbackPresenter;
 import com.example.administrator.fnroad.feedback.presenter.NewFeedbackPresenterImpl;
+import com.example.administrator.fnroad.main.model.Feedback;
 import com.example.administrator.fnroad.main.view.IProjectFeedbackView;
 import com.example.administrator.fnroad.spreference.SharePrefrenceHelper;
 

@@ -1,6 +1,9 @@
 package com.example.administrator.fnroad.main.presenter;
 
+import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 
 import com.example.administrator.fnroad.ProjectApplication;
 import com.example.administrator.fnroad.R;
@@ -27,6 +30,7 @@ import okhttp3.Request;
 
 public class ProjectFeedbackPresenterImpl implements IProjectFeedbackPresenter{
     private IProjectFeedbackView projectFeedbackView;
+    FeedbackItemInfoAdapter feedbackItemInfoAdapter;
 
     public ProjectFeedbackPresenterImpl(IProjectFeedbackView projectFeedbackView){
         this.projectFeedbackView=projectFeedbackView;
@@ -62,7 +66,7 @@ public class ProjectFeedbackPresenterImpl implements IProjectFeedbackPresenter{
                 try {
                     Gson gson=new Gson();
                     List<Feedback> feedbackList=gson.fromJson(response,new TypeToken<List<Feedback>>(){}.getType());
-                    FeedbackItemInfoAdapter feedbackItemInfoAdapter=new FeedbackItemInfoAdapter(projectFeedbackView.getActivity(),feedbackList);
+                    feedbackItemInfoAdapter=new FeedbackItemInfoAdapter(projectFeedbackView.getActivity(),feedbackList);
                     projectFeedbackView.setAdapter(feedbackItemInfoAdapter);
 //                    String response1=response.substring(2);
 //                    JSONObject jsonObject=new JSONObject(response1);
@@ -89,6 +93,14 @@ public class ProjectFeedbackPresenterImpl implements IProjectFeedbackPresenter{
                 }
             }
         });
+    }
+
+    @Override
+    public void onListViewItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Feedback feedback=(Feedback)feedbackItemInfoAdapter.getItem(i);
+        Bundle bundle=new Bundle();
+        bundle.putParcelable("feedback",feedback);
+        projectFeedbackView.showFeedbackDetail(bundle);
     }
 
 }

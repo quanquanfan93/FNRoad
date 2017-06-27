@@ -1,7 +1,9 @@
 package com.example.administrator.fnroad.feedback.presenter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -48,6 +50,8 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
     private ProgressDialog progressDialog;
     private SharePrefrenceHelper sharePrefrenceHelper;
     private int progress;
+    private SimpleAdapter simpleAdapter;
+
 
     public NewFeedbackPresenterImpl(INewFeedbackView newFeedbackView){
         this.mNewFeedbackView=newFeedbackView;
@@ -95,7 +99,7 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
         map.put("itemImage", newBitmap);
         imageItem = new ArrayList<>();
         imageItem.add(map);
-        SimpleAdapter simpleAdapter = new SimpleAdapter(mNewFeedbackView.getActivity(),
+        simpleAdapter = new SimpleAdapter(mNewFeedbackView.getActivity(),
                 imageItem, R.layout.grid_item_picture,
                 new String[]{"itemImage"}, new int[]{R.id.iv_grid_photo});
         simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -116,6 +120,8 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
     public void onGVItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (i == imageItem.size() - 1 && addable == 1){
             mNewFeedbackView.openAlbum();
+        }else {
+            dialog(i);
         }
     }
 
@@ -142,7 +148,7 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
                 imageItem.remove(size - 2);//移除倒数第二张，也就是+
                 addable = 0;
             }
-            SimpleAdapter simpleAdapter = new SimpleAdapter(mNewFeedbackView.getActivity(),
+            simpleAdapter = new SimpleAdapter(mNewFeedbackView.getActivity(),
                     imageItem, R.layout.grid_item_picture,
                     new String[]{"itemImage"}, new int[]{R.id.iv_grid_photo});
             simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -166,8 +172,8 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
     }
 
     private void addFeedback(){
-        OkHttpUtils.Param[] params=new OkHttpUtils.Param[6];
-        params[0]=new OkHttpUtils.Param("STATUS","1");
+        final OkHttpUtils.Param[] params=new OkHttpUtils.Param[6];
+        params[0]=new OkHttpUtils.Param("STATUS","0");
         params[1]=new OkHttpUtils.Param("PROJECTID",sharePrefrenceHelper.getStringValue("PROJECT_ID"));
         params[2]=new OkHttpUtils.Param("UPDATE_AMOUNT",mNewFeedbackView.getUpdateAmount());
         params[3]=new OkHttpUtils.Param("PROGRESS",mNewFeedbackView.getProgress());
@@ -177,7 +183,8 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
         OkHttpUtils.postAsyn(url, params, new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
-                ProjectApplication.getInstance().onNetError();
+                Toast.makeText(mNewFeedbackView.getActivity(),"反馈上传失败",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
 
             @Override
@@ -206,22 +213,19 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
                             @Override
                             public void onError(Request request, Exception e) {
                                 ProjectApplication.getInstance().onNetError();
-                                Toast.makeText(mNewFeedbackView.getActivity(),"照片上传失败",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mNewFeedbackView.getActivity(),"反馈上传失败",Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
 
                             @Override
                             public void onResponse(String response) {
-                                Toast.makeText(mNewFeedbackView.getActivity(),"照片上传成功",Toast.LENGTH_SHORT).show();
-                                progressDialog.dismiss();
-                                mNewFeedbackView.getActivity().setResult(Activity.RESULT_OK);
-                                mNewFeedbackView.getActivity().finish();
-//                                newProjectView.getActivity().finish();
+                                updateProjectStatus();
                             }
                         });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    progressDialog.dismiss();
                     Log.e(TAG, "onResponse: "+e);
                 }
             }
@@ -249,5 +253,73 @@ public class NewFeedbackPresenterImpl implements INewFeedbackPresenter {
             progress=progress+10;
             mNewFeedbackView.setProgress(progress+"%");
         }
+    }
+
+    private void updateProjectStatus(){
+        OkHttpUtils.Param[] params=new OkHttpUtils.Param[2];
+        params[0]= new OkHttpUtils.Param("PROJECTID",sharePrefrenceHelper.getStringValue("PROJECT_ID"));
+        params[1]=new OkHttpUtils.Param("STATUS","3");
+        String url= mNewFeedbackView.getActivity().getString(R.string.php_service_url)+ "Project/update_status";
+        OkHttpUtils.postAsyn(url, params, new OkHttpUtils.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                Toast.makeText(mNewFeedbackView.getActivity(),"反馈上传失败",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(mNewFeedbackView.getActivity(),"反馈上传成功",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                mNewFeedbackView.getActivity().setResult(Activity.RESULT_OK);
+                mNewFeedbackView.getActivity().finish();
+            }
+        });
+    }
+
+    /*
+* Dialog对话框提示用户删除操作
+* position为删除图片位置
+*/
+    protected void dialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mNewFeedbackView.getActivity());
+        builder.setMessage("确认移除已添加图片吗？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (position == 8) {
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put("itemImage", R.mipmap.icon_add_picture);
+                    imageItem.remove(position);
+                    imageItem.add(map);
+                    simpleAdapter.notifyDataSetChanged();
+                    addable = 1;
+                } else {
+                    dialog.dismiss();
+                    imageItem.remove(position);
+                    simpleAdapter.notifyDataSetChanged();
+                }
+                //从删除的图片的位置起始，后面的图片地址向前移
+                if (position < 8) {
+                    for (int i = position + 1; i <= 8; i++) {
+                        paths[i - 1] = paths[i];
+                    }
+                    paths[8] = null;
+                } else if (position == 8) {
+                    paths[8] = null;
+                }
+                indexOfImage--;
+//                refresh(newProjectView.getImagePath());
+//                addImagePathAndRefresh(newProjectView.getImagePath());
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

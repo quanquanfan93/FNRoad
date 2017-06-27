@@ -13,5 +13,6 @@
     <color name="bgInfo">#b3d9ff</color>
     <color name="bgField">#3399ff</color>
     <color name="blue">#6495ED</color>
+    <color name="blue1">#506495ED</color>
     <color name="bgBorder">#1874CD</color>
 </resources>

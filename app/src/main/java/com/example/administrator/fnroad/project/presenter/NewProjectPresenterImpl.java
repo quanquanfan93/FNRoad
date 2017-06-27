@@ -1,9 +1,11 @@
 package com.example.administrator.fnroad.project.presenter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.IntentService;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -52,6 +54,7 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
     private String[] paths = new String[9];    //保存图片的路径
     private int indexOfImage = 0;              //paths中图片的索引
     private ProgressDialog progressDialog;
+    private SimpleAdapter simpleAdapter;
 
     public NewProjectPresenterImpl(INewProjectView newProjectView){
         this.newProjectView=newProjectView;
@@ -117,7 +120,7 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
         map.put("itemImage", newBitmap);
         imageItem = new ArrayList<>();
         imageItem.add(map);
-        SimpleAdapter simpleAdapter = new SimpleAdapter(newProjectView.getActivity(),
+        simpleAdapter = new SimpleAdapter(newProjectView.getActivity(),
                 imageItem, R.layout.grid_item_picture,
                 new String[]{"itemImage"}, new int[]{R.id.iv_grid_photo});
         simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -138,6 +141,8 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
     public void onGVItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (i == imageItem.size() - 1 && addable == 1){
             newProjectView.openAlbum();
+        }else {
+            dialog(i);
         }
     }
 
@@ -145,6 +150,10 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
     public void addImagePathAndRefresh(String imagePath) {
         paths[indexOfImage] = imagePath;
         indexOfImage++;
+        refresh(imagePath);
+    }
+
+    private void refresh(String imagePath){
         if (!TextUtils.isEmpty(imagePath)) {
             //根据图片地址获得bitmap
             Bitmap addbmp = BitmapFactory.decodeFile(imagePath);
@@ -164,7 +173,7 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
                 imageItem.remove(size - 2);//移除倒数第二张，也就是+
                 addable = 0;
             }
-            SimpleAdapter simpleAdapter = new SimpleAdapter(newProjectView.getActivity(),
+            simpleAdapter = new SimpleAdapter(newProjectView.getActivity(),
                     imageItem, R.layout.grid_item_picture,
                     new String[]{"itemImage"}, new int[]{R.id.iv_grid_photo});
             simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -183,9 +192,12 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
 //            gridView.setAdapter(simpleAdapter);
             simpleAdapter.notifyDataSetChanged();
             //刷新后释放防止手机休眠后自动添加
-            imagePath = null;
+            newProjectView.setImagePath(null);
+//            imagePath = null;
         }
     }
+
+
 
     /**
      * 设置两个spinner对应的list
@@ -217,16 +229,18 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
      * 提交立项申请
      */
     private void addProject(){
-        OkHttpUtils.Param[] params=new OkHttpUtils.Param[9];
+        OkHttpUtils.Param[] params=new OkHttpUtils.Param[11];
         params[0]=new OkHttpUtils.Param("STATUS","1");
         params[1]=new OkHttpUtils.Param("PROJECT_NAME",newProjectView.getProjectName());
         params[2]=new OkHttpUtils.Param("ROAD_NAME",newProjectView.getRoadName());
-        params[3]=new OkHttpUtils.Param("PROJECT_TYPE",newProjectView.getProjectType());
+        params[3]=new OkHttpUtils.Param("PROJECT_TYPE",newProjectView.getProjectType(mProjectTypeList));
         params[4]=new OkHttpUtils.Param("DESCRIPTION",newProjectView.getProjectDescription());
         params[5]=new OkHttpUtils.Param("CREATE_TIME",DateUtils.getCurrentTime());
         params[6]=new OkHttpUtils.Param("X", String.valueOf(newProjectView.getX()));
         params[7]=new OkHttpUtils.Param("Y",String.valueOf(newProjectView.getY()));
         params[8]=new OkHttpUtils.Param("PATROL_MANAGER",String.valueOf(ProjectApplication.getInstance().getUserBean().getUserId()));
+        params[9]=new OkHttpUtils.Param("ACTUAL_AMOUNT","0");
+        params[10]=new OkHttpUtils.Param("ESTIMATED_AMOUNT","0");
         String url= newProjectView.getActivity().getString(R.string.php_service_url)+ "Project/add_project";
         OkHttpUtils.postAsyn(url, params, new OkHttpUtils.ResultCallback<String>() {
             @Override
@@ -271,10 +285,17 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
 //                                newProjectView.getActivity().finish();
                             }
                         });
+                    }else{
+                        progressDialog.dismiss();
+                        newProjectView.getActivity().setResult(Activity.RESULT_OK);
+                        newProjectView.getActivity().finish();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "onResponse: "+e);
+                    progressDialog.dismiss();
+                    newProjectView.getActivity().setResult(Activity.RESULT_OK);
+                    newProjectView.getActivity().finish();
                 }
             }
         });
@@ -285,5 +306,51 @@ public class NewProjectPresenterImpl implements INewProjectPresenter{
      */
     private void cancelProject(){
         newProjectView.getActivity().finish();
+    }
+
+    /*
+ * Dialog对话框提示用户删除操作
+ * position为删除图片位置
+ */
+    protected void dialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(newProjectView.getActivity());
+        builder.setMessage("确认移除已添加图片吗？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (position == 8) {
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put("itemImage", R.mipmap.icon_add_picture);
+                    imageItem.remove(position);
+                    imageItem.add(map);
+                    simpleAdapter.notifyDataSetChanged();
+                    addable = 1;
+                } else {
+                    dialog.dismiss();
+                    imageItem.remove(position);
+                    simpleAdapter.notifyDataSetChanged();
+                }
+                //从删除的图片的位置起始，后面的图片地址向前移
+                if (position < 8) {
+                    for (int i = position + 1; i <= 8; i++) {
+                        paths[i - 1] = paths[i];
+                    }
+                    paths[8] = null;
+                } else if (position == 8) {
+                    paths[8] = null;
+                }
+                indexOfImage--;
+//                refresh(newProjectView.getImagePath());
+//                addImagePathAndRefresh(newProjectView.getImagePath());
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

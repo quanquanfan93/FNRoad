@@ -5,7 +5,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent"
+                  android:layout_height="wrap_content"
                   android:focusable="true"
                   android:focusableInTouchMode="true"
                   android:orientation="vertical"
@@ -305,7 +305,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:orientation="horizontal"
@@ -316,6 +316,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
                 android:orientation="vertical"
+                android:layout_marginTop="5dp"
                 >
 
                 <TextView
@@ -339,10 +340,10 @@
                     />
             </LinearLayout>
 
-            <GridView
+            <com.example.administrator.fnroad.view.NoScrollGridView
                 android:id="@+id/gv_new_feedback_update_pictures"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="8.5"
                 android:numColumns="3"
                 android:columnWidth="100dp"

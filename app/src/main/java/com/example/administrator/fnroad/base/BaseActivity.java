@@ -4,14 +4,30 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+
+import com.example.administrator.fnroad.utils.ToastUtils;
 
 import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract int getContentViewId();
+    private static boolean isExit = false;//退出应用
+    private static Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    isExit = false;
+                    break;
+            }
+        }
+    };
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -60,5 +76,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // ButterKnife.unbind(this);//解除绑定
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //双击返回键退出应用
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isExit) {
+                finish();
+                System.exit(0);
+            } else {
+                isExit = true;
+                ToastUtils.showShort(getApplicationContext(), "再按一次后退键退出程序");
+                mHandler.sendEmptyMessageDelayed(0, 1000);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

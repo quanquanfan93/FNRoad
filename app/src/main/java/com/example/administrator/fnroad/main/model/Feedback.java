@@ -1,15 +1,19 @@
 package com.example.administrator.fnroad.main.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.administrator.fnroad.feedback.view.FeedbackDetailActivity;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Administrator on 2017/6/23 0023.
  */
 
-public class Feedback {
+public class Feedback implements Parcelable{
     public int id;
     @SerializedName("project_id")
-    public int project_id;
+    public int projectId;
     public int status;
     @SerializedName("update_amount")
     public String updateAmount;
@@ -28,12 +32,12 @@ public class Feedback {
         this.id = id;
     }
 
-    public int getProject_id() {
-        return project_id;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProject_id(int project_id) {
-        this.project_id = project_id;
+    public void setProjectId(int project_id) {
+        this.projectId = project_id;
     }
 
     public int getStatus() {
@@ -83,4 +87,45 @@ public class Feedback {
     public void setPictureName(String pictureName) {
         this.pictureName = pictureName;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(projectId);
+        parcel.writeInt(status);
+        parcel.writeString(updateAmount);
+        parcel.writeString(progress);
+        parcel.writeString(description);
+        parcel.writeString(createTime);
+        parcel.writeString(pictureName);
+    }
+
+    public static final Parcelable.Creator<Feedback> CREATOR = new Creator<Feedback>() {
+        @Override
+        public Feedback[] newArray(int size) {
+            return new Feedback[size];
+        }
+
+        @Override
+        public Feedback createFromParcel(Parcel in) {
+            return new Feedback(in);
+        }
+    };
+
+    public Feedback(Parcel in){
+        id=in.readInt();
+        projectId=in.readInt();
+        status=in.readInt();
+        updateAmount=in.readString();
+        progress=in.readString();
+        description=in.readString();
+        createTime=in.readString();
+        pictureName=in.readString();
+    }
+
 }

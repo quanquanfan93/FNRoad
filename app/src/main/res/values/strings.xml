@@ -11,6 +11,15 @@
     <string name="app_toast_load_all_data">哟！居然没数据！</string>
     <!--提示用户操作成功-->
     <string name="app_toast_return_success">操作成功！</string>
+    <!--&lt;!&ndash;服务器基URL&ndash;&gt;-->
+    <!--<string name="php_service_url">http://192.168.253.1/FNRoad/index.php/</string>-->
+
+    <!--!&#45;&#45;服务器基图片URL&ndash;&gt;-->
+    <!--<string name="php_service_picture_url">http://192.168.253.1/FNRoad/</string>-->
+
     <!--服务器基URL-->
-    <string name="php_service_url">http://192.168.253.1/FNRoad/index.php/</string>
+    <string name="php_service_url">http://221.12.173.119:8081/FNRoad/index.php/</string>
+
+    <!--服务器基图片URL-->
+    <string name="php_service_picture_url">http://221.12.173.119:8081/FNRoad/</string>
 </resources>

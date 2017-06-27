@@ -2,6 +2,7 @@ package com.example.administrator.fnroad.main.presenter;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.util.Log;
 import android.view.View;
 
@@ -19,6 +20,7 @@ import com.example.administrator.fnroad.main.model.ProjectType;
 import com.example.administrator.fnroad.main.view.IProjectView;
 import com.example.administrator.fnroad.main.view.ProjectFeedbackDialog;
 import com.example.administrator.fnroad.spreference.SharePrefrenceHelper;
+import com.example.administrator.fnroad.utils.ArcgisMapUtils;
 import com.example.administrator.fnroad.utils.OkHttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.internal.ObjectConstructor;
@@ -44,6 +46,9 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
     private IProjectView mProjectView;
     private SharePrefrenceHelper sharePrefrenceHelper;
     private MapView mMapView;
+    private ArrayList<Project> mProjects=new ArrayList<>();
+    private String[] projectNames;
+
 
     public ProjectPresenterImpl(IProjectView projectView) {
         this.mProjectView = projectView;
@@ -66,6 +71,7 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
 
                 @Override
                 public void onResponse(String response) {
+                    if(response!=null&&!response.equals("")&&!response.equals("null"))
                     handleProjectsData(response);
                 }
             });
@@ -80,7 +86,29 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
             case R.id.add_project:
                 mProjectView.addNewProject();
                 break;
+            case R.id.user:
+                mProjectView.showUser();
+                break;
+            case R.id.iv_main_all_project:
+                mProjectView.showAllProject();
+                break;
+            case R.id.iv_main_search:
+                mProjectView.searchProject(projectNames);
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public Point locateProject(String projectName) {
+        for(Project project:mProjects){
+            if(project.getProjectName().equals(projectName)){
+                Point projectPoint=new Point(project.getX(),project.getY());
+                return projectPoint;
+            }
+        }
+        return null;
     }
 
     /**
@@ -109,8 +137,8 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
 //                project.setCreateTime(jsonObject.getString("create_time"));
 //                project.setEtc(jsonObject.getString("etc"));
 //                project.setDescription(jsonObject.getString("description"));
-//                project.setEstimatedAmount(jsonObject.getDouble("estimated_amount"));
-//                project.setActualAmount(jsonObject.getDouble("actual_amount"));
+//                project.setEstimatedAmount(jsonObject.getString("estimated_amount"));
+//                project.setActualAmount(jsonObject.getString("actual_amount"));
 //                project.setOrganization(jsonObject.getString("organization"));
 //                project.setConstructionManager(jsonObject.getString("construction_manager"));
 //                UserBean patrolManager=new UserBean();
@@ -123,7 +151,7 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
 //                patrolManager.setName(userJSONObject.getString("name"));
 //                patrolManager.setPermission(userJSONObject.getInt("permission"));
 //                project.setPatrolManager(patrolManager);
-//                project.setProgress(jsonObject.getInt("progress"));
+//                project.setProgress(jsonObject.getString("progress"));
 //                project.setX(jsonObject.getDouble("x"));
 //                project.setY(jsonObject.getDouble("y"));
 //                project.setPicture(jsonObject.getString("picture"));
@@ -133,10 +161,23 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
 //            e.printStackTrace();
 //            Log.e(TAG, "handleProjectsData: "+e);
 //        }
-        List<Project> projectList = gson.fromJson(response, new TypeToken<List<Project>>() {
-        }.getType());
-        Log.e(TAG, "handleProjectsData: " + projectList.size());
-        for (Project project : projectList) {
+        try {
+            mProjects = gson.fromJson(response, new TypeToken<List<Project>>() {
+            }.getType());
+        }catch (Exception e){
+            Log.e(TAG, "handleProjectsData: "+e);
+        }
+        int length=mProjects.size();
+        projectNames=new String[length];
+        int j=0;
+        for(int i=0;i<length;i++){
+            if(mProjects.get(i).getStatus()!=0) {
+                projectNames[j] = mProjects.get(i).getProjectName();
+                j++;
+            }
+        }
+        Log.e(TAG, "handleProjectsData: " + mProjects.size());
+        for (Project project : mProjects) {
             Drawable drawable = null;
             switch (project.getStatus()) {
                 case 1:
@@ -161,6 +202,7 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("PROJECT_ID", project.getProjectId());
                 attributes.put("PROJECT_NAME", project.getProjectName());
+                attributes.put("STATUS",project.getStatus());
                 attributes.put("ROAD_NAME", project.getRoadName());
                 attributes.put("TYPE_ID", project.getProjectType().getId());
                 attributes.put("TYPE_NAME", project.getProjectType().getType());
@@ -185,6 +227,7 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
             Map<String, Object> attributes = selectedGraphic.getAttributes();
             sharePrefrenceHelper.putStringValue("PROJECT_ID", attributes.get("PROJECT_ID").toString());
             sharePrefrenceHelper.putStringValue("PROJECT_NAME", attributes.get("PROJECT_NAME").toString());
+            sharePrefrenceHelper.putStringValue("STATUS",attributes.get("STATUS").toString());
             sharePrefrenceHelper.putStringValue("ROAD_NAME", attributes.get("ROAD_NAME").toString());
             sharePrefrenceHelper.putStringValue("TYPE_ID", attributes.get("TYPE_ID").toString());
             sharePrefrenceHelper.putStringValue("TYPE_NAME", attributes.get("TYPE_NAME").toString());
@@ -193,6 +236,9 @@ public class ProjectPresenterImpl implements IProjectPresenter, OnSingleTapListe
             sharePrefrenceHelper.putStringValue("PROGRESS", attributes.get("PROGRESS").toString());
             ProjectFeedbackDialog projectFeedbackDialog = new ProjectFeedbackDialog(mProjectView);
             projectFeedbackDialog.show();
+        }else {
+            Point wgsPoint = ArcgisMapUtils.toWgsPoint(mProjectView.getMapPoint(v, v1), mProjectView.getSpatialReference());//坐标转换
+            mProjectView.setLocationChanged(wgsPoint);
         }
     }
 }

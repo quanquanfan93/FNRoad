@@ -11,7 +11,7 @@
     <application
         android:name=".ProjectApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_road"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -33,6 +33,10 @@
         <activity android:name=".feedback.view.NewFeedbackActivity">
         </activity>
         <activity android:name=".feedback.view.FeedbackDetailActivity">
+        </activity>
+        <activity android:name=".user.view.UserActivity">
+        </activity>
+        <activity android:name=".search.view.SearchActivity">
         </activity>
     </application>
 

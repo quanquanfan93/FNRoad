@@ -3,6 +3,8 @@ package com.example.administrator.fnroad.project.view;
 import android.app.Activity;
 import android.widget.SimpleAdapter;
 
+import com.example.administrator.fnroad.main.model.ProjectType;
+
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -24,11 +26,15 @@ public interface INewProjectView {
 
     String getRoadName();
 
-    String getProjectType();
+    String getProjectType(List<ProjectType> projectTypeList);
 
     String getProjectDescription();
 
     double getX();
 
     double getY();
+
+    String getImagePath();
+
+    void setImagePath(String imagePath);
 }

@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ButtonBarLayout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,8 +24,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.administrator.fnroad.R;
+import com.example.administrator.fnroad.main.model.Project;
+import com.example.administrator.fnroad.main.model.ProjectType;
 import com.example.administrator.fnroad.project.presenter.INewProjectPresenter;
 import com.example.administrator.fnroad.project.presenter.NewProjectPresenterImpl;
+import com.example.administrator.fnroad.utils.ToastUtils;
 
 import java.util.List;
 
@@ -116,8 +120,15 @@ public class NewProjectActivity extends AppCompatActivity implements INewProject
     }
 
     @Override
-    public String getProjectType() {
-        return String.valueOf(projectTypeSP.getSelectedItemPosition()+1);
+    public String getProjectType(List<ProjectType> projectTypeList) {
+        String typeName=projectTypeSP.getSelectedItem().toString();
+        for(ProjectType projectType:projectTypeList){
+            if(projectType.getType().equals(typeName)){
+                return String.valueOf(projectType.getId());
+            }
+        }
+        return null;
+//        return String.valueOf(projectTypeSP.getSelectedItemPosition()+1);
     }
 
     @Override
@@ -133,6 +144,16 @@ public class NewProjectActivity extends AppCompatActivity implements INewProject
     @Override
     public double getY() {
         return y;
+    }
+
+    @Override
+    public String getImagePath() {
+        return pathImage;
+    }
+
+    @Override
+    public void setImagePath(String imagePath) {
+        pathImage=imagePath;
     }
 
     @Override

@@ -1,11 +1,15 @@
 package com.example.administrator.fnroad.login.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.administrator.fnroad.main.model.Feedback;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Administrator on 2016/10/10 0010.
  */
-public class UserBean {
+public class UserBean implements Parcelable{
     @SerializedName("id")
     private int mUserId;
     @SerializedName("username")
@@ -84,4 +88,46 @@ public class UserBean {
     public void setOrganization(String organization) {
         mOrganization = organization;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(mUserId);
+        parcel.writeString(mUsername);
+        parcel.writeString(mPassword);
+        parcel.writeString(mName);
+        parcel.writeInt(mTelephone);
+        parcel.writeInt(mPermission);
+        parcel.writeString(mOrganization);
+    }
+
+    public static final Parcelable.Creator<UserBean> CREATOR = new Creator<UserBean>() {
+        @Override
+        public UserBean[] newArray(int size) {
+            return new UserBean[size];
+        }
+
+        @Override
+        public UserBean createFromParcel(Parcel in) {
+            return new UserBean(in);
+        }
+    };
+
+
+    public UserBean(Parcel in){
+        mUserId=in.readInt();
+        mUsername=in.readString();
+        mPassword=in.readString();
+        mName=in.readString();
+        mTelephone=in.readInt();
+        mPermission=in.readInt();
+        mOrganization=in.readString();
+    }
+
+
+
 }

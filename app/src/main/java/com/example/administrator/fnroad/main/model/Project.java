@@ -1,5 +1,8 @@
 package com.example.administrator.fnroad.main.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.esri.core.internal.catalog.User;
 import com.example.administrator.fnroad.login.model.UserBean;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +13,7 @@ import java.util.Date;
  * Created by Administrator on 2017/6/17 0017.
  */
 
-public class Project{
+public class Project implements Parcelable{
     @SerializedName("project_id")
     public int projectId;
     public int status;
@@ -37,6 +40,10 @@ public class Project{
     public double x;
     public double y;
     public String picture;
+
+
+    public Project(){
+    }
 
     public int getProjectId() {
         return projectId;
@@ -172,5 +179,63 @@ public class Project{
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(projectId);
+        parcel.writeInt(status);
+        parcel.writeString(projectName);
+        parcel.writeString(roadName);
+        parcel.writeParcelable(projectType,PARCELABLE_WRITE_RETURN_VALUE);
+        parcel.writeString(createTime);
+        parcel.writeString(etc);
+        parcel.writeString(description);
+        parcel.writeString(estimatedAmount);
+        parcel.writeString(actualAmount);
+        parcel.writeString(organization);
+        parcel.writeString(constructionManager);
+        parcel.writeParcelable(patrolManager,PARCELABLE_WRITE_RETURN_VALUE);
+        parcel.writeString(progress);
+        parcel.writeDouble(x);
+        parcel.writeDouble(y);
+        parcel.writeString(picture);
+    }
+
+    public static final Parcelable.Creator<Project> CREATOR = new Creator<Project>() {
+        @Override
+        public Project[] newArray(int size) {
+            return new Project[size];
+        }
+
+        @Override
+        public Project createFromParcel(Parcel in) {
+            return new Project(in);
+        }
+    };
+
+    public Project(Parcel in){
+        projectId=in.readInt();
+        status=in.readInt();
+        projectName=in.readString();
+        roadName=in.readString();
+        projectType=in.readParcelable(ProjectType.class.getClassLoader());
+        createTime=in.readString();
+        etc=in.readString();
+        description=in.readString();
+        estimatedAmount=in.readString();
+        actualAmount=in.readString();
+        organization=in.readString();
+        constructionManager=in.readString();
+        patrolManager=in.readParcelable(UserBean.class.getClassLoader());
+        progress=in.readString();
+        x=in.readDouble();
+        y=in.readDouble();
+        picture=in.readString();
     }
 }
