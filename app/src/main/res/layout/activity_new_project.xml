@@ -152,10 +152,10 @@
                     android:gravity="center_vertical"
                     android:maxWidth="15dp"
                     android:minHeight="12dp"
-                    android:popupBackground="#FFFFFF"
                     android:scrollbarSize="6dp"
                     android:spinnerMode="dropdown"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center"
+                    />
             </LinearLayout>
         </LinearLayout>
 

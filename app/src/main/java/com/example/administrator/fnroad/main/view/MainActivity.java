@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.SpatialReference;
+import com.esri.core.internal.tasks.ags.c;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.PictureMarkerSymbol;
 import com.example.administrator.fnroad.R;
@@ -44,6 +46,7 @@ import com.example.administrator.fnroad.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements IProjectView,View.OnClickListener{
     private static final String TAG = "MainActivity";
@@ -98,19 +101,20 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
                 PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
-//        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_PHONE_STATE)!=
-//                PackageManager.PERMISSION_GRANTED){
-//            permissionList.add(Manifest.permission.READ_PHONE_STATE);
-//        }
-//        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-//                PackageManager.PERMISSION_GRANTED) {
-//            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//        }
+        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_PHONE_STATE)!=
+                PackageManager.PERMISSION_GRANTED){
+            permissionList.add(Manifest.permission.READ_PHONE_STATE);
+        }
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
         if(!permissionList.isEmpty()){
             String[] permissions=permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }else {
             setLocation();
+//            initAllMembers();
         }
         projectPresenter.showUserProjectData();
         addProjectIV.setOnClickListener(this);
@@ -120,6 +124,29 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
         Point point=new Point(118.3843557054605,28.856365950917002);
         mMapView.zoomToResolution(point,0.001373291015625);
     }
+
+    private void initAllMembers(){
+        mMapView = (MapView) findViewById(R.id.mapView);;
+        addProjectIV=(ImageView)findViewById(R.id.add_project);
+//        mLocationFab=(FloatingActionButton)findViewById(R.id.fab);
+        userIV=(ImageView)findViewById(R.id.user);
+        locationIV=(ImageView)findViewById(R.id.iv_main_location);
+        allProjectIV=(ImageView)findViewById(R.id.iv_main_all_project);
+        searchIV=(ImageView)findViewById(R.id.iv_main_search);
+        projectPresenter=new ProjectPresenterImpl(this);
+        initMap();
+        projectPresenter.showUserProjectData();
+        addProjectIV.setOnClickListener(this);
+        userIV.setOnClickListener(this);
+        allProjectIV.setOnClickListener(this);
+        searchIV.setOnClickListener(this);
+        Point point=new Point(118.3843557054605,28.856365950917002);
+        mMapView.zoomToResolution(point,0.001373291015625);
+        setLocation();
+    }
+
+
+
 
     /**
      * 初始化地图
@@ -168,16 +195,24 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
         locationIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(locationGraphicId!=-1) {
-                    mGraphicsLayer.removeGraphic(locationGraphicId);
-                    locationGraphicId=-1;
+                try {
+                    Toast.makeText(MainActivity.this, "采用定位坐标", Toast.LENGTH_SHORT).show();
+                    if (locationGraphicId != -1) {
+                        mGraphicsLayer.removeGraphic(locationGraphicId);
+                        locationGraphicId = -1;
+                    }
+                    mLocationDisplayManager = mMapView.getLocationDisplayManager();
+                    mLocationDisplayManager.setLocationListener(mMyLocationListener);
+                    mLocationDisplayManager.setAllowNetworkLocation(true);
+                    mLocationDisplayManager.setUseCourseSymbolOnMovement(true);
+                    mLocationDisplayManager.setAutoPanMode(LocationDisplayManager.AutoPanMode.LOCATION);//设置模式
+                    mLocationDisplayManager.start();
+                    Point point = (Point) GeometryEngine.project(mLocation, egs, egs);
+                    mMapView.zoomToResolution(point, 4.29153442382814E-05);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this,"定位失败,请查看相关设置",Toast.LENGTH_SHORT).show();
                 }
-                mLocationDisplayManager=mMapView.getLocationDisplayManager();
-                mLocationDisplayManager.setLocationListener(mMyLocationListener);
-                mLocationDisplayManager.start();
-                mLocationDisplayManager.setAutoPanMode(LocationDisplayManager.AutoPanMode.LOCATION);//设置模式
-                Point point=(Point)GeometryEngine.project(mLocation,egs,egs);
-                mMapView.zoomToResolution(point,4.29153442382814E-05);
             }
         });
     }
@@ -274,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
     private void addLocationGraphic(Point point){
         if(locationGraphicId!=-1)
             mGraphicsLayer.removeGraphic(locationGraphicId);
+        else Toast.makeText(this,"采用点击坐标",Toast.LENGTH_SHORT).show();
         changedLocation=point;
         Drawable drawable=this.getResources().getDrawable(R.drawable.ic_add_location_deep_purple_900_48dp);
         PictureMarkerSymbol pictureMarkerSymbol = new PictureMarkerSymbol(getApplicationContext(),
@@ -322,10 +358,12 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
             if (zoomToMe) {
                 Point p = (Point) GeometryEngine.project(mLocation, egs, egs);
                 mMapView.zoomToResolution(p,4.29153442382814E-05);
+                Log.e(TAG, "onLocationChanged: "+ p.toString());
             }
         }
 
         public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled: "+provider);
             Toast.makeText(getApplicationContext(), "GPS Disabled",
                     Toast.LENGTH_SHORT).show();
         }
@@ -336,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.e(TAG, "onStatusChanged: "+provider);
         }
     }
 
@@ -357,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements IProjectView,View
                             return;
                         }
                     }
+//                    initAllMembers();
                     setLocation();
                 }else {
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();

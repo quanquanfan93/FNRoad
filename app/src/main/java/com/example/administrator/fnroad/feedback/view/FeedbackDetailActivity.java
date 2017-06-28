@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -17,7 +18,7 @@ import com.example.administrator.fnroad.feedback.presenter.IFeedbackDetailPresen
 import com.example.administrator.fnroad.main.model.Feedback;
 import com.example.administrator.fnroad.spreference.SharePrefrenceHelper;
 
-public class FeedbackDetailActivity extends AppCompatActivity implements View.OnClickListener,IFeedbackDetailView{
+public class FeedbackDetailActivity extends AppCompatActivity implements View.OnClickListener,IFeedbackDetailView,GridView.OnItemClickListener{
 
     private IFeedbackDetailPresenter mFeedbackDetailPresenter;
     private TextView projectNameTV;
@@ -72,6 +73,7 @@ public class FeedbackDetailActivity extends AppCompatActivity implements View.On
         }
         backBTN.setOnClickListener(this);
         mFeedbackDetailPresenter.setPictureGV(mFeedback);
+        updatePicturesGV.setOnItemClickListener(this);
     }
 
     @Override
@@ -87,5 +89,10 @@ public class FeedbackDetailActivity extends AppCompatActivity implements View.On
     @Override
     public void setPictureGVAdapter(PictureAdapter pictureAdapter) {
         updatePicturesGV.setAdapter(pictureAdapter);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        mFeedbackDetailPresenter.onGVItemClick(adapterView,view,i,l);
     }
 }
